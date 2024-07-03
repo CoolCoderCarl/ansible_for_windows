@@ -7,14 +7,13 @@ pid                  {{ nginx_pid }};
 include /usr/share/nginx/modules/*.conf;
 
 events {
-{% filter indent(width=4, first=True) %}
-{{ nginx_events }}{% endfilter %}
+  multi_accept       on;
+  worker_connections 65535;
 }
 
 http {
-{% filter indent(width=4, first=True) %}
-{{ nginx_http }}
-{% endfilter %}
+  access_log /var/log/nginx/access.log;
+  error_log  /var/log/nginx/error.log warn;
 
 {% for s in nginx_servers %}
     server {
