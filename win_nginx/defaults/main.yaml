@@ -5,7 +5,7 @@ nginx_servers:
 #    listen 80;
     listen 443 ssl;
     server_name my.nginx.example.com;
-    ssl_certificate     my.nginx.example.com.crt;
-    ssl_certificate_key my.nginx.example.com.key;
+    ssl_certificate     C:\Temp\my.nginx.example.com.crt;
+    ssl_certificate_key C:\Temp\my.nginx.example.com.key;
     ssl_protocols       TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;
     ssl_ciphers         HIGH:!aNULL:!MD5;
