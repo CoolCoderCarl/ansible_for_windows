@@ -11,3 +11,5 @@ First of all you need to run this playbook `csr-cert-add.yaml` which create cert
 Second - you can run this playbook `win_nginx.yaml` which use role `win_nginx` which install nginx for Windows and configure firewall for 80 and 443 ports
 
 You can fix some variables if necessary for `win_nginx` role in `default` directory 
+
+After all configuration run `ansible-playbook csr-cert-add.yaml` and then `ansible-playbook win_nginx.yaml`
