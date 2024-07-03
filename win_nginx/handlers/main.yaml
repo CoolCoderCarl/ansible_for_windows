@@ -1,0 +1,6 @@
+--
+- name: start_nginx
+  win_service:
+    name: nginx
+    start_mode: auto
+    state: started
