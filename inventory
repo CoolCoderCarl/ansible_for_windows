@@ -1,0 +1,12 @@
+[first]
+127.0.0.1
+
+[second]
+127.0.0.2
+
+[third]
+127.0.0.3
+
+[another:children]
+first
+third
