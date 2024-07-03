@@ -85,12 +85,19 @@
   become_method: runas
   vars: 
     cert_common_name: my.nginx.example.com
+    cert_key_paths:
+      - src: "/tmp/ssl/certs/{{cert_common_name}}.crt"
+        dest: "C:\Temp\{{cert_common_name}}.crt"
+      - src: "/tmp/ssl/certs/{{cert_common_name}}.key"
+        dest: "C:\Temp\{{cert_common_name}}.key"
   tasks:
     - name: Generate host/internal domain certificate (with own self-signed CA) - with full chain of trust
       copy:
-        src: "/tmp/ssl/certs/{{cert_common_name}}.crt"
-        dest: "C:\Temp\{{cert_common_name}}.crt"
-            
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}" 
+      loop:
+        - cert_key_paths
+        
     - name: Import pfx certificate that is password protected
       ansible.windows.win_certificate_store:
         path: "C:\Temp\{{ cert_common_name}}.crt"
