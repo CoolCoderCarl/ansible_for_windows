@@ -22,3 +22,14 @@
     state: started
     notify:
       - start_nginx
+
+# Firewall
+- name: Firewall rule to allow HTTP on TCP port 80
+  win_firewall_rule:
+    name: HTTP
+    localport: 80
+    action: allow
+    direction: in
+    protocol: tcp
+    state: present
+    enabled: yes
