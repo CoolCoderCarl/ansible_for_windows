@@ -83,6 +83,8 @@
   hosts: all
   become: true
   become_method: runas
+  vars_files:
+    - vault.yaml
   vars: 
     cert_common_name: my.nginx.example.com
     cert_key_paths:
@@ -102,4 +104,4 @@
       ansible.windows.win_certificate_store:
         path: "C:\Temp\{{ cert_common_name}}.crt"
         state: present
-        password: VeryStrongPasswordHere!
+        password: "{{ password_in_vault }}"
