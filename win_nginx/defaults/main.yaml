@@ -9,5 +9,6 @@ nginx_http: |
   error_log  /var/log/nginx/error.log warn;
 nginx_servers:
   - |
-    listen 80;
+#    listen 80;
+    listen 443;
     server_name test.example.com;
