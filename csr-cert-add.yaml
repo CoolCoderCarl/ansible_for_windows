@@ -78,3 +78,21 @@
                 lookup('file','/tmp/ssl/certs/ca.crt')+'\n'
               }}"
             dest: "/tmp/ssl/certs/{{cert_common_name}}.crt"
+
+- name: Upload and import cert to win machine
+  hosts: all
+  become: true
+  become_method: runas
+  vars: 
+    cert_common_name: my.nginx.example.com
+  tasks:
+    - name: Generate host/internal domain certificate (with own self-signed CA) - with full chain of trust
+      copy:
+        src: "/tmp/ssl/certs/{{cert_common_name}}.crt"
+        dest: "C:\Temp\{{cert_common_name}}.crt"
+            
+    - name: Import pfx certificate that is password protected
+      ansible.windows.win_certificate_store:
+        path: "C:\Temp\{{ cert_common_name}}.crt"
+        state: present
+        password: VeryStrongPasswordHere!
