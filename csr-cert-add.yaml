@@ -1,0 +1,80 @@
+---
+- hosts: localhost
+  gather_facts: no
+  vars:
+    cert_common_name: my.nginx.example.com
+    cert_subject_alt_name:
+      - "DNS:*.example.com"
+    ownca_not_after: "+397d"
+    openssl_csr_common_name: "Self-Signed CA"
+    openssl_csr_organization_name: "Self-Signed Organisation"
+    #tmp_ssl_keys: 
+    
+  tasks:
+    - name: Create local directories
+      file:
+        state: directory
+        path: "{{item}}"
+      loop:
+        - /tmp/ssl/keys/
+        - /tmp/ssl/csrs/
+        - /tmp/ssl/certs/
+
+    - name: Generate Certificate Authority (CA) self-signed certificate
+      block:
+        - name: Generate Root CA private key
+          openssl_privatekey:
+            path: "/tmp/ssl/keys/ca.key"
+
+        - name: Generate Root CA CSR
+          openssl_csr:
+            path: "/tmp/ssl/csrs/ca.csr"
+            privatekey_path: "/tmp/ssl/keys/ca.key"
+            common_name: "{{openssl_csr_common_name}}"
+            organization_name: "{{openssl_csr_organization_name}}"
+            basic_constraints:
+              - CA:TRUE
+            basic_constraints_critical: yes
+            key_usage:
+              - keyCertSign
+              - digitalSignature
+              - cRLSign
+            key_usage_critical: yes
+
+        - name: Generate Root CA certificate
+          openssl_certificate:
+            path: "/tmp/ssl/certs/ca.crt"
+            privatekey_path: "/tmp/ssl/keys/ca.key"
+            csr_path: "/tmp/ssl/csrs/ca.csr"
+            provider: selfsigned
+
+    - name: Generate domain key, CSR and self-signed certificate (using own CA)
+      block:
+        - name: Generate host/internal domain private key
+          openssl_privatekey:
+            path: "/tmp/ssl/keys/{{cert_common_name}}.key"
+
+        - name: Generate host/internal domain CSR
+          openssl_csr:
+            path: "/tmp/ssl/csrs/{{cert_common_name}}.csr"
+            privatekey_path: "/tmp/ssl/keys/{{cert_common_name}}.key"
+            common_name: "{{cert_common_name}}"
+            organization_name: "{{openssl_csr_organization_name}}"
+            subject_alt_name: "{{cert_subject_alt_name}}"
+
+        - name: Generate host/internal domain certificate (with own self-signed CA)
+          openssl_certificate:
+            path: "/tmp/ssl/certs/{{cert_common_name}}.hostonly.crt"
+            csr_path: "/tmp/ssl/csrs/{{cert_common_name}}.csr"
+            ownca_path: "/tmp/ssl/certs/ca.crt"
+            ownca_privatekey_path: "/tmp/ssl/keys/ca.key"
+            ownca_not_after: "{{ownca_not_after}}"
+            provider: ownca
+
+        - name: Generate host/internal domain certificate (with own self-signed CA) - with full chain of trust
+          copy:
+            content: "{{
+                lookup('file','/tmp/ssl/certs/{{cert_common_name}}.hostonly.crt')+'\n'+
+                lookup('file','/tmp/ssl/certs/ca.crt')+'\n'
+              }}"
+            dest: "/tmp/ssl/certs/{{cert_common_name}}.crt"
