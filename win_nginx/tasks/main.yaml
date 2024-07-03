@@ -24,12 +24,15 @@
       - start_nginx
 
 # Firewall
-- name: Firewall rule to allow HTTP on TCP port 80
+- name: Firewall rule to allow HTTP on TCP port 80 and 443
   win_firewall_rule:
     name: HTTP
-    localport: 80
+    localport: "{{ item }}"
     action: allow
     direction: in
     protocol: tcp
     state: present
     enabled: yes
+  loop:
+    - 80
+    - 443
