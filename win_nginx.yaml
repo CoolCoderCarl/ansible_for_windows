@@ -1,1 +1,7 @@
 ---
+- name: run win_nginx role
+  become: true
+  gather_facts: true
+  hosts: all
+  roles:
+    - win_nginx
