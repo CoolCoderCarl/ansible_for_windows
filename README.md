@@ -1,15 +1,20 @@
 # ansible_for_windows
 
+## Prerequisites
+
+First of all you need to install collections for windows using Ansible Galaxy as folows:
+- `ansible-galaxy collection install chocolatey.chocolatey`
+- `ansible-galaxy collection install community.windows`
+
 ## Variables
 `password_in_vault` is variable located in `vault.yaml` but you need first put your pass here.
 Then run command `ansible-vault encrypt vault.yaml` and type new pass for vault file
 
 ## How to use
 
-First of all you need to run this playbook `csr-cert-add.yaml` which create cert and key on localhost and add it to Windows machines in `all` group in your inventory (edit if necessary)  
+Playbook `deploy-nginx-and-certs.yaml` is divided by three big steps
+- Create certs
+- Deploy certs
+- Deploy nginx using role `win_nginx`
 
-Second - you can run this playbook `win_nginx.yaml` which use role `win_nginx` which install nginx for Windows and configure firewall for 80 and 443 ports
-
-You can fix some variables if necessary for `win_nginx` role in `default` directory 
-
-After all configuration run `ansible-playbook csr-cert-add.yaml` and then `ansible-playbook win_nginx.yaml`
+To run type `ansible-playbook deploy-nginx-and-certs.yaml` 
