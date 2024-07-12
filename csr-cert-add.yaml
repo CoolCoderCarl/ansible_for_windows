@@ -79,6 +79,7 @@
               }}"
             dest: "/tmp/ssl/certs/{{cert_common_name}}.crt"
 
+
 - name: Upload and import cert to win machine
   hosts: all
   become: true
@@ -105,3 +106,13 @@
         path: "C:\Temp\{{ cert_common_name}}.crt"
         state: present
         password: "{{ password_in_vault }}"
+
+
+- name: run win_nginx role
+  become: true
+  gather_facts: true
+  hosts: all
+  roles:
+    - win_nginx
+
+...
