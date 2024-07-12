@@ -9,8 +9,8 @@ First of all you need to install collections for windows using Ansible Galaxy as
 After this you need to check is there is WinRM turn on on the inventory hosts
 
 
-## Variables
-`password_in_vault` is variable located in `vault.yaml` but you need first put your pass here.
+## Vault
+The `password_in_vault` is variable located in `vault.yaml` but you need first put your pass here  
 Then run command `ansible-vault encrypt vault.yaml` and type new pass for vault file
 
 ## How to use
