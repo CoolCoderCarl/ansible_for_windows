@@ -2,7 +2,7 @@ nginx_user: nginx
 nginx_pid: /var/run/nginx.pid
 nginx_servers:
   - |
-#    listen 80;
+    listen 80;
     listen 443 ssl;
     server_name my.nginx.example.com;
     ssl_certificate     C:\Temp\my.nginx.example.com.crt;
